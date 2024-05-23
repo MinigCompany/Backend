@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Start server
+      run: |
+        nohup npm start &
+        sleep 5 # Asegura que el servidor tenga tiempo de iniciarse
+
+    - name: Run tests
+      run: npm test
+
+    - name: Stop server
+      run: |
+        fuser -k 3000/tcp # Finaliza el servidor (reemplaza 3000 con tu puerto si es diferente)
